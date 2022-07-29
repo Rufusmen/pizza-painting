@@ -55,24 +55,16 @@ public class Referee extends AbstractReferee {
                 .setX(280)
                 .setY(915)
                 .setAnchor(0.5);
-        graphicEntityModule.createSprite()
-                .setImage("logoCG.png")
-                .setX(1920 - 280)
-                .setY(915)
-                .setAnchor(0.5);
     }
 
     private void drawGrids() {
-        int bigCellSize = state.getCellSize();
-        int bigOrigX = (int) Math.round(1920 / 2 - bigCellSize);
-        int bigOrigY = (int) Math.round(1080 / 2 - bigCellSize);
-        state.drawInit(5, 5, bigCellSize, 0, 0xf9b700);
+        state.drawInit( 0, 0xf9b700);
     }
     
     private void drawHud() {
         for (Player player : gameManager.getPlayers()) {
-            int x = player.getIndex() == 0 ? 280 : 1920 - 280;
-            int y = 220;
+            int x = 1920 - 280;
+            int y = player.getIndex() == 0 ? 520 : 1080-220;
 
             graphicEntityModule
                     .createRectangle()

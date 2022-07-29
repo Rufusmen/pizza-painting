@@ -24,9 +24,12 @@ public class GameState {
 
     private static final int WALL_ID = 42;
 
-    public void drawInit(int bigOrigX, int bigOrigY, int bigCellSize, int i, int i1) {
-        board.drawInit(bigOrigX, bigOrigY, bigCellSize, i1);
-        pawns.forEach(pawn -> pawn.drawInit(bigOrigX, bigOrigY, bigCellSize, i, graphicEntityModule));
+    public void drawInit( int i, int i1) {
+        int cellSize = getCellSize();
+        int bigOrigX = (1080-board.rows*cellSize)/2;
+        int bigOrigY = 10;
+        board.drawInit(bigOrigX, bigOrigY, cellSize, i1);
+        pawns.forEach(pawn -> pawn.drawInit(bigOrigX, bigOrigY, cellSize, i, graphicEntityModule));
     }
 
     public List<String> boardInput() {

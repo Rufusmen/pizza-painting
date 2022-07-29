@@ -31,8 +31,8 @@ public class Board {
 
     public void init(Random random){
         this.random = random;
-        rows = 20 + random.nextInt(20);
-        cols = 30 + random.nextInt(20);
+        rows = 30; //+ random.nextInt(15);
+        cols = 45; //+ random.nextInt(15);
         cells = new Entity[rows][cols];
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < cols; ++j) {
@@ -69,7 +69,7 @@ public class Board {
                         rectangle.setFillColor(0xffffff);
                         break;
                     case WALL:
-                        rectangle.setFillColor(0xffff);
+                        rectangle.setFillColor(0);
                         break;
                     case COLOR1:
                         rectangle.setFillColor(0x00ffff);
@@ -90,7 +90,7 @@ public class Board {
             for (int j = 0; j < cols; ++j) {
                 switch (cells[i][j].type) {
                     case EMPTY -> cells[i][j].rectangle.setFillColor(0xffffff);
-                    case WALL -> cells[i][j].rectangle.setFillColor(0xffff);
+                    case WALL -> cells[i][j].rectangle.setFillColor(0);
                     case COLOR1 -> cells[i][j].rectangle.setFillColor(0x00ffff);
                     case COLOR2 -> cells[i][j].rectangle.setFillColor(0xff00ff);
                 }
@@ -115,7 +115,7 @@ public class Board {
     }
 
     private void generateWalls(){
-        int wallsNo = random.nextInt(rows*cols/200);
+        int wallsNo = random.nextInt(rows*cols/100);
         while (wallsNo-->0){
             List<List<Boolean>> wall =  WallTemplate.walls.get(random.nextInt(WallTemplate.walls.size())).lines().map(row ->
                  row.codePoints().mapToObj(c -> (char) c).map(c -> c == 'X').collect(Collectors.toList())
@@ -137,7 +137,7 @@ public class Board {
 
     private void setWall(Boolean[][] matrix){
         int posX = random.nextInt(cols/2);
-        int posY = random.nextInt(rows-matrix.length);
+        int posY = random.nextInt(rows-matrix[0].length-1);
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
                 if(matrix[i][j]){
