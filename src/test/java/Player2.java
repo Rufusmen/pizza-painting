@@ -13,7 +13,7 @@ public class Player2 {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         Random random = new Random(0);
-        System.err.println("MOVE 1 1 1");
+       // System.err.println("MOVE 1 1 1");
         while (true) {
             int opponentRow = in.nextInt();
             int opponentCol = in.nextInt();
@@ -27,14 +27,14 @@ public class Player2 {
                 int fuel = in.nextInt();
                 int x = in.nextInt();
                 int y =in.nextInt();
-                System.err.printf("%d %d %d %d%n",id,fuel,x,y);
+                //System.err.printf("%d %d %d %d%n",id,fuel,x,y);
                 for (int j = 0; j < 3; j++) {
                     String str = in.next();
-                    System.err.println(str);
+                    //System.err.println(str);
                 }
-
+                System.out.printf("MOVE %d 1 4\n",id);
             }
-            System.out.println("MOVE 1 1 4");
+
         }
     }
 }

@@ -14,7 +14,7 @@ public class Player1 {
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
-        Random random = new Random(0);
+        //Random random = new Random(0);
         System.err.println("MOVE 1 1 1");
         while (true) {
 
@@ -22,7 +22,7 @@ public class Player1 {
             int opponentCol = in.nextInt();
             for(int i = 0;i<opponentRow;i++){
                 String str = in.next();
-                System.err.println(str);
+                //System.err.println(str);
             }
             int pawns = in.nextInt();
             for (int i = 0; i < pawns; i++) {
@@ -30,15 +30,15 @@ public class Player1 {
                 int fuel = in.nextInt();
                 int x = in.nextInt();
                 int y =in.nextInt();
-                System.err.printf("%d %d %d %d%n",id,fuel,x,y);
+                //System.err.printf("%d %d %d %d%n",id,fuel,x,y);
                 for (int j = 0; j < 3; j++) {
                     String str = in.next();
-                    System.err.println(str);
+                    //System.err.println(str);
                 }
-
+                System.out.printf("SHOOT %d 1 4\n",id);
             }
            
-            System.out.println("SHOOT 0 1 4");
+
         }
     }
 }

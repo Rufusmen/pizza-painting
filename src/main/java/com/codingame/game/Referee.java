@@ -28,7 +28,7 @@ public class Referee extends AbstractReferee {
     public void init() {
         random = new Random(gameManager.getSeed());
         state = gameStateProvider.get();
-        state.init();
+        state.init(random);
         drawBackground();
         drawHud();
         drawGrids();
@@ -63,7 +63,7 @@ public class Referee extends AbstractReferee {
     }
 
     private void drawGrids() {
-        int bigCellSize = 100;
+        int bigCellSize = state.getCellSize();
         int bigOrigX = (int) Math.round(1920 / 2 - bigCellSize);
         int bigOrigY = (int) Math.round(1080 / 2 - bigCellSize);
         state.drawInit(5, 5, bigCellSize, 0, 0xf9b700);
@@ -161,6 +161,7 @@ public class Referee extends AbstractReferee {
             }
         }
         state.resolveActions(actions);
+        System.out.println(turn);
     }
 
     private void endGame() {

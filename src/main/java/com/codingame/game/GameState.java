@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -71,10 +72,18 @@ public class GameState {
         return new ArrayList<>();
     }
 
-    public void init() {
-        board.init();
-        pawns.add(new Pawn(0).init(3, 0, new Vector2(6, 6)));
-        pawns.add(new Pawn(1).init(3, 1, new Vector2(3, 3)));
+    public void init(Random random) {
+        board.init(random);
+        int pawnsNo = 1+random.nextInt(3);
+        int id=0;
+        while (pawnsNo-->0){
+            Vector2 startPos = new Vector2( 2+random.nextInt(board.rows-4),random.nextInt(10));
+            while (!board.isValidField(startPos) || !isValidPawnPlacement(startPos,3)){
+                startPos = new Vector2( 2+random.nextInt(board.rows-4),random.nextInt(10));
+            }
+            pawns.add(new Pawn(id++).init(3,0,startPos));
+            pawns.add(new Pawn(id++).init(3,1,new Vector2(board.rows-1-startPos.getX(), board.cols-1-startPos.getY())));
+        }
     }
 
     public int getPawnsCnt(int player) {
@@ -183,7 +192,7 @@ public class GameState {
             Pawn pawn = pawns.get(p);
             for (int i = pawn.position.getX() - pawn.offset, ip = 0; ip < pawn.size; ++i, ++ip) {
                 for (int j = pawn.position.getY() - pawn.offset, jp = 0; jp < pawn.size; ++j, ++jp) {
-                    if (i >= board.cols || i < 0 || j < 0 || j >= board.rows) {
+                    if (i >= board.rows || i < 0 || j < 0 || j >= board.cols) {
                         list.add(p);
                         continue;
                     }
@@ -198,6 +207,37 @@ public class GameState {
             }
         }
         return new ArrayList<>(list);
+    }
+
+    private boolean isValidPawnPlacement(Vector2 position,int size){
+        if(checkPawnsCollisions(position)){
+            return false;
+        }
+        int[][] view = new int[board.rows][board.cols];
+        for (int i = 0; i < board.rows; ++i) {
+            for (int j = 0; j < board.cols; ++j) {
+                view[i][j] = board.cells[i][j].type.equals(Type.WALL) ? WALL_ID : -1;
+            }
+        }
+        for (int i = position.getX() - size/2, ip = 0; ip < size; ++i, ++ip) {
+            for (int j = position.getY() - size/2, jp = 0; jp < size; ++j, ++jp) {
+                if (i >= board.rows || i < 0 || j < 0 || j >= board.cols) {
+                    return false;
+                }
+                if (view[i][j] != -1) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean checkPawnsCollisions(Vector2 position){
+        return pawns.stream().anyMatch(pawn -> Math.abs(pawn.position.getY()-position.getY()) < pawn.size || Math.abs(pawn.position.getX()-position.getX()) < pawn.size);
+    }
+
+    public int getCellSize(){
+        return Math.min(1000/board.rows,1500/ board.cols);
     }
 
     public void draw() {
