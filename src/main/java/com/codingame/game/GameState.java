@@ -24,12 +24,12 @@ public class GameState {
 
     private static final int WALL_ID = 42;
 
-    public void drawInit( int i, int i1) {
+    public void drawInit( int i, int i1,int c1,int c2) {
         int cellSize = getCellSize();
         int bigOrigX = (1080-board.rows*cellSize)/2;
         int bigOrigY = 10;
-        board.drawInit(bigOrigX, bigOrigY, cellSize, i1);
-        pawns.forEach(pawn -> pawn.drawInit(bigOrigX, bigOrigY, cellSize, i, graphicEntityModule));
+        board.drawInit(bigOrigX, bigOrigY, cellSize, i1,c1,c2);
+        pawns.forEach(pawn -> pawn.drawInit(bigOrigX, bigOrigY, cellSize, i, graphicEntityModule,c1,c2));
     }
 
     public List<String> boardInput() {
@@ -124,7 +124,7 @@ public class GameState {
         intersection.retainAll(color2);
         color1.removeAll(intersection);
         color2.removeAll(intersection);
-        color1.forEach(v -> {
+        color1.forEach(v -> { //FIXME
             Pawn p = isOnPawn(v.clone());
             if (p != null) {
                 p.colorPawn(1,v);

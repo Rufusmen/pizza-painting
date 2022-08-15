@@ -19,6 +19,8 @@ public class Pawn extends Entity {
     private int origY;
     private int origX;
     public int offset;
+    private int color1;
+    private int color2;
 
     public Pawn(int id) {
         this.id = id;
@@ -47,11 +49,13 @@ public class Pawn extends Entity {
         }
     }
 
-    public void drawInit(int origX, int origY, int cellSize, int lineColor, GraphicEntityModule graphicEntityModule) {
+    public void drawInit(int origX, int origY, int cellSize, int lineColor, GraphicEntityModule graphicEntityModule,int c1,int c2) {
         group = graphicEntityModule.createGroup();
         this.origX = origX;
         this.origY = origY;
         this.cellSize = cellSize;
+        color1=c1;
+        color2=c2;
         for (int i = position.getX() - offset, ip = 0; ip < size; ++i, ++ip) {
             for (int j = position.getY() - offset, jp = 0; jp < size; ++j, ++jp) {
                 Rectangle rectangle = graphicEntityModule.createRectangle()
@@ -63,10 +67,10 @@ public class Pawn extends Entity {
                     .setLineColor(lineColor);
                 switch (pawnColors[ip][jp].color) {
                     case 1:
-                        rectangle.setFillColor(0x00ffff);
+                        rectangle.setFillColor(c1);
                         break;
                     case 2:
-                        rectangle.setFillColor(0xff00ff);
+                        rectangle.setFillColor(c2);
                         break;
                     default:
                 }
@@ -84,10 +88,10 @@ public class Pawn extends Entity {
                     .setX(convert(origY, cellSize, j));
                 switch (pawnColors[ip][jp].color) {
                     case 1:
-                        rec.setFillColor(0x00ffff);
+                        rec.setFillColor(color1);
                         break;
                     case 2:
-                        rec.setFillColor(0xff00ff);
+                        rec.setFillColor(color2);
                         break;
                     default:
                 }

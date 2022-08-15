@@ -1,5 +1,6 @@
 package com.codingame.game;
 
+import com.codingame.gameengine.core.AbstractMultiplayerPlayer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +15,7 @@ import com.codingame.gameengine.module.entities.Sprite;
 import com.codingame.gameengine.module.entities.Text;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import java.util.stream.Collectors;
 
 public class Referee extends AbstractReferee {
     @Inject private MultiplayerGameManager<Player> gameManager;
@@ -51,14 +53,15 @@ public class Referee extends AbstractReferee {
                 .setImage("Background.jpg")
                 .setAnchor(0);
         graphicEntityModule.createSprite()
-                .setImage("logo.png")
-                .setX(280)
-                .setY(915)
-                .setAnchor(0.5);
+                .setImage("logo_painting.png")
+                .setX(1530)
+                .setY(220)
+                .setAnchor(0);
     }
 
     private void drawGrids() {
-        state.drawInit( 0, 0xf9b700);
+        var colors = gameManager.getPlayers().stream().map(AbstractMultiplayerPlayer::getColorToken).collect(Collectors.toList());
+        state.drawInit( 0, 0,colors.get(0),colors.get(1));
     }
     
     private void drawHud() {
@@ -89,7 +92,7 @@ public class Referee extends AbstractReferee {
                     .setY(y + 120)
                     .setZIndex(20)
                     .setFontSize(40)
-                    .setFillColor(0xffffff)
+                    .setFillColor(0)
                     .setAnchor(0.5);
 
             Sprite avatar = graphicEntityModule.createSprite()

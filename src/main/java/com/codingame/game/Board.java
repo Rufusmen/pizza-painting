@@ -21,6 +21,9 @@ public class Board {
     public int rows;
     public int cols;
 
+    private int color1;
+    private int color2;
+
     private Group entity;
 
     private int origX;
@@ -49,7 +52,9 @@ public class Board {
         return x>0 && y>0 && x<rows && y<cols && !cells[x][y].type.equals(Type.WALL);
     }
 
-    public void drawInit(int origX, int origY, int cellSize, int lineColor) {
+    public void drawInit(int origX, int origY, int cellSize, int lineColor,int c1, int c2) {
+        color1 = c1;
+        color2 = c2;
         this.origX = origX;
         this.origY = origY;
         this.cellSize = cellSize;
@@ -72,10 +77,10 @@ public class Board {
                         rectangle.setFillColor(0);
                         break;
                     case COLOR1:
-                        rectangle.setFillColor(0x00ffff);
+                        rectangle.setFillColor(c1);
                         break;
                     case COLOR2:
-                        rectangle.setFillColor(0xff00ff);
+                        rectangle.setFillColor(c2);
                         break;
                 }
                 cells[i][j].rectangle = rectangle;
@@ -91,8 +96,8 @@ public class Board {
                 switch (cells[i][j].type) {
                     case EMPTY -> cells[i][j].rectangle.setFillColor(0xffffff);
                     case WALL -> cells[i][j].rectangle.setFillColor(0);
-                    case COLOR1 -> cells[i][j].rectangle.setFillColor(0x00ffff);
-                    case COLOR2 -> cells[i][j].rectangle.setFillColor(0xff00ff);
+                    case COLOR1 -> cells[i][j].rectangle.setFillColor(color1);
+                    case COLOR2 -> cells[i][j].rectangle.setFillColor(color2);
                 }
             }
         }
