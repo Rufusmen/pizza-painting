@@ -35,17 +35,14 @@ public class Referee extends AbstractReferee {
         drawHud();
         drawGrids();
 
+        int size = state.getBoardSize();
 
 
-        gameManager.setFrameDuration(600);
 
-        if (gameManager.getLeagueLevel() == 1) {
-            gameManager.setMaxTurns(9);
-        } else {
-            gameManager.setMaxTurns(9 * 9);
-        }
-        
-        validActions = getValidActions();
+        gameManager.setFrameDuration(500);
+        gameManager.setTurnMaxTime(150);
+        gameManager.setMaxTurns(size/9);
+
     }
 
     private void drawBackground() {
@@ -60,7 +57,7 @@ public class Referee extends AbstractReferee {
     }
 
     private void drawGrids() {
-        var colors = gameManager.getPlayers().stream().map(AbstractMultiplayerPlayer::getColorToken).collect(Collectors.toList());
+        List<Integer> colors = gameManager.getPlayers().stream().map(AbstractMultiplayerPlayer::getColorToken).collect(Collectors.toList());
         state.drawInit( 0, 0,colors.get(0),colors.get(1));
     }
     
@@ -125,13 +122,6 @@ public class Referee extends AbstractReferee {
         endGame();
     }
 
-    private List<Action> getValidActions() {
-        List<Action> validActions;
-        validActions = state.getValidActions();
-
-        Collections.shuffle(validActions, random);
-        return validActions;
-    }
 
     @Override
     public void gameTurn(int turn) {
@@ -156,7 +146,6 @@ public class Referee extends AbstractReferee {
             }
         }
         state.resolveActions(actions);
-        System.out.println(turn);
     }
 
     private void endGame() {

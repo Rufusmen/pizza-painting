@@ -1,6 +1,7 @@
 package com.codingame.game;
 
 import static com.codingame.game.Util.convert;
+import static com.codingame.game.util.LineSeparator.lines;
 
 import com.codingame.game.Entity.Type;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
@@ -34,8 +35,8 @@ public class Board {
 
     public void init(Random random){
         this.random = random;
-        rows = 30; //+ random.nextInt(15);
-        cols = 45; //+ random.nextInt(15);
+        rows = 15 + random.nextInt(10);
+        cols = 25 + random.nextInt(10);
         cells = new Entity[rows][cols];
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < cols; ++j) {
@@ -49,7 +50,7 @@ public class Board {
 
     public boolean isValidField(Vector2 v){
         int y = v.getY(),x = v.getX();
-        return x>0 && y>0 && x<rows && y<cols && !cells[x][y].type.equals(Type.WALL);
+        return x>=0 && y>=0 && x<rows && y<cols && !cells[x][y].type.equals(Type.WALL);
     }
 
     public void drawInit(int origX, int origY, int cellSize, int lineColor,int c1, int c2) {
@@ -94,10 +95,17 @@ public class Board {
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < cols; ++j) {
                 switch (cells[i][j].type) {
-                    case EMPTY -> cells[i][j].rectangle.setFillColor(0xffffff);
-                    case WALL -> cells[i][j].rectangle.setFillColor(0);
-                    case COLOR1 -> cells[i][j].rectangle.setFillColor(color1);
-                    case COLOR2 -> cells[i][j].rectangle.setFillColor(color2);
+                    case EMPTY:
+                        cells[i][j].rectangle.setFillColor(0xffffff);
+                        break;
+                    case WALL:
+                        cells[i][j].rectangle.setFillColor(0);
+                        break;
+                    case COLOR1:
+                        cells[i][j].rectangle.setFillColor(color1);
+                        break;
+                    case COLOR2:
+                        cells[i][j].rectangle.setFillColor(color2);
                 }
             }
         }
@@ -120,14 +128,16 @@ public class Board {
     }
 
     private void generateWalls(){
-        int wallsNo = random.nextInt(rows*cols/100);
+        int wallsNo = random.nextInt(rows*cols/200);
         while (wallsNo-->0){
-            List<List<Boolean>> wall =  WallTemplate.walls.get(random.nextInt(WallTemplate.walls.size())).lines().map(row ->
+            List<List<Boolean>> wall =  lines(WallTemplate.walls.get(random.nextInt(WallTemplate.walls.size()))).map(row ->
                  row.codePoints().mapToObj(c -> (char) c).map(c -> c == 'X').collect(Collectors.toList())
             ).collect(Collectors.toList());
             setWall(rotate(random.nextInt(4),toMatrix(wall)));
         }
     }
+
+
 
     private Boolean[][] toMatrix(List<List<Boolean>> wall){
         Boolean[][] tmpMatrix = new Boolean[wall.size()][wall.get(0).size()];
@@ -165,6 +175,10 @@ public class Board {
             matrix = tmpMatrix;
         }
         return matrix;
+    }
+
+    public int getSize(){
+        return cols*rows;
     }
 
 }

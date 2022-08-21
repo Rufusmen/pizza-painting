@@ -71,10 +71,6 @@ public class GameState {
         return inputView;
     }
 
-    public List<Action> getValidActions() {
-        return new ArrayList<>();
-    }
-
     public void init(Random random) {
         board.init(random);
         int pawnsNo = 1+random.nextInt(3);
@@ -246,5 +242,9 @@ public class GameState {
     public void draw() {
         board.draw();
         pawns.forEach(Pawn::draw);
+    }
+
+    public int getBoardSize(){
+        return board.getSize();
     }
 }
