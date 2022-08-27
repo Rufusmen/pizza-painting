@@ -35,8 +35,8 @@ public class Board {
 
     public void init(Random random){
         this.random = random;
-        rows = 15 + random.nextInt(10);
-        cols = 25 + random.nextInt(10);
+        rows = 20 + random.nextInt(10);
+        cols = 30 + random.nextInt(10);
         cells = new Entity[rows][cols];
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < cols; ++j) {

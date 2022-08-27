@@ -3,12 +3,15 @@ package com.codingame.game;
 import com.codingame.game.Action.ActionType;
 import com.codingame.game.Entity.Type;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
+import com.codingame.gameengine.module.tooltip.TooltipModule;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,18 +24,19 @@ public class GameState {
     @Inject
     private GraphicEntityModule graphicEntityModule;
     private List<Pawn> pawns = new ArrayList<>();
+    private Type[][] prevView = new Type[0][0];
 
     private static final int WALL_ID = 42;
 
-    public void drawInit( int i, int i1,int c1,int c2) {
+    public void drawInit(int i, int i1, int c1, int c2) {
         int cellSize = getCellSize();
-        int bigOrigX = (1080-board.rows*cellSize)/2;
+        int bigOrigX = (1080 - board.rows * cellSize) / 2;
         int bigOrigY = 10;
-        board.drawInit(bigOrigX, bigOrigY, cellSize, i1,c1,c2);
-        pawns.forEach(pawn -> pawn.drawInit(bigOrigX, bigOrigY, cellSize, i, graphicEntityModule,c1,c2));
+        board.drawInit(bigOrigX, bigOrigY, cellSize, i1, c1, c2);
+        pawns.forEach(pawn -> pawn.drawInit(bigOrigX, bigOrigY, cellSize, i, graphicEntityModule, c1, c2));
     }
 
-    public List<String> boardInput() {
+    public List<String> initialBoardInput() {
         List<String> inputView = new ArrayList<>();
         inputView.add(String.format("%d %d", board.rows, board.cols));
         Type[][] view = new Type[board.rows][board.cols];
@@ -52,7 +56,71 @@ public class GameState {
         ) {
             inputView.add(Joiner.on("").join(Arrays.stream(line).map(Entity::typeToChar).collect(Collectors.toList())));
         }
+        prevView = view;
         return inputView;
+    }
+
+    public List<String> boardInput() {
+        List<String> inputView = new ArrayList<>();
+        Type[][] view = new Type[board.rows][board.cols];
+        for (int i = 0; i < board.rows; ++i) {
+            for (int j = 0; j < board.cols; ++j) {
+                view[i][j] = board.cells[i][j].type;
+            }
+        }
+        pawns.forEach(pawn -> {
+            for (int i = pawn.position.getX() - pawn.offset, ip = 0; ip < pawn.size; ++i, ++ip) {
+                for (int j = pawn.position.getY() - pawn.offset, jp = 0; jp < pawn.size; ++j, ++jp) {
+                    view[i][j] = pawn.pawnColors[ip][jp].color == 1 ? Type.COLOR1 : Type.COLOR2;
+                }
+            }
+        });
+        for (int i = 0; i < prevView.length; i++) {
+            for (int j = 0; j < prevView[i].length; j++) {
+                if (prevView[i][j] != view[i][j]) {
+                    inputView.add(String.format("%d %d %c", i, j, Entity.typeToChar(view[i][j])));
+                }
+            }
+        }
+        prevView = view;
+        return inputView;
+    }
+
+    public Map<Integer, Integer> getScore() {
+        Map<Integer, Integer> score = new HashMap<>();
+        int score1 = 0;
+        int score2 = 0;
+        Type[][] view = new Type[board.rows][board.cols];
+        for (int i = 0; i < board.rows; ++i) {
+            for (int j = 0; j < board.cols; ++j) {
+                view[i][j] = board.cells[i][j].type;
+            }
+        }
+        pawns.forEach(pawn -> {
+            for (int i = pawn.position.getX() - pawn.offset, ip = 0; ip < pawn.size; ++i, ++ip) {
+                for (int j = pawn.position.getY() - pawn.offset, jp = 0; jp < pawn.size; ++j, ++jp) {
+                    view[i][j] = pawn.pawnColors[ip][jp].color == 1 ? Type.COLOR1 : Type.COLOR2;
+                }
+            }
+        });
+        for (Type[] line : view
+        ) {
+            for (Type type : line) {
+                switch (type) {
+                    case COLOR1:
+                        score1++;
+                        break;
+                    case COLOR2:
+                        score2++;
+                        break;
+                    default:
+                }
+            }
+        }
+        score.put(0, score1);
+        score.put(1, score2);
+        return score;
+
     }
 
     public List<String> pawnInput(int player) {
@@ -73,15 +141,16 @@ public class GameState {
 
     public void init(Random random) {
         board.init(random);
-        int pawnsNo = 1+random.nextInt(3);
-        int id=0;
-        while (pawnsNo-->0){
-            Vector2 startPos = new Vector2( 2+random.nextInt(board.rows-4),random.nextInt(10));
-            while (!board.isValidField(startPos) || !isValidPawnPlacement(startPos,3)){
-                startPos = new Vector2( 2+random.nextInt(board.rows-4),random.nextInt(10));
+        int pawnsNo = 1 + random.nextInt(3);
+        int id = 0;
+        int fuel = random.nextInt(20)+20;
+        while (pawnsNo-- > 0) {
+            Vector2 startPos = new Vector2(2 + random.nextInt(board.rows - 4), random.nextInt(10));
+            while (!board.isValidField(startPos) || !isValidPawnPlacement(startPos, 3)) {
+                startPos = new Vector2(2 + random.nextInt(board.rows - 4), random.nextInt(10));
             }
-            pawns.add(new Pawn(id++).init(3,0,startPos));
-            pawns.add(new Pawn(id++).init(3,1,new Vector2(board.rows-1-startPos.getX(), board.cols-1-startPos.getY())));
+            pawns.add(new Pawn(id++).init(3, 0, startPos,fuel));
+            pawns.add(new Pawn(id++).init(3, 1, new Vector2(board.rows - 1 - startPos.getX(), board.cols - 1 - startPos.getY()),fuel));
         }
     }
 
@@ -120,20 +189,20 @@ public class GameState {
         intersection.retainAll(color2);
         color1.removeAll(intersection);
         color2.removeAll(intersection);
-        color1.forEach(v -> { //FIXME
-            Pawn p = isOnPawn(v.clone());
+        color1.forEach(v -> {
+            Pawn p = isOnPawn(v);
             if (p != null) {
-                p.colorPawn(1,v);
+                p.colorPawn(1, v);
             } else {
-                board.color(1,v);
+                board.color(1, v);
             }
         });
         color2.forEach(v -> {
-            Pawn p = isOnPawn(v.clone());
+            Pawn p = isOnPawn(v);
             if (p != null) {
-                p.colorPawn(2,v);
+                p.colorPawn(2, v);
             } else {
-                board.color(2,v);
+                board.color(2, v);
             }
         });
         pawns.forEach(p -> {
@@ -143,14 +212,14 @@ public class GameState {
     }
 
     private Pawn isOnPawn(Vector2 v) {
-        return pawns.stream().filter(p -> p.isOnPawn(v)).findFirst().orElse(null);
+        return pawns.stream().filter(p -> p.isOnPawn(v.clone())).findFirst().orElse(null);
     }
 
     private List<Vector2> shoot(Pawn pawn, Action action) {
         List<Vector2> res = new ArrayList<>();
         Vector2 actual = pawn.position.clone();
         int range = action.range;
-        int offset = pawn.offset+1;
+        int offset = pawn.offset + 1;
         Vector2 step;
         switch (action.direction) {
             case 1:
@@ -172,7 +241,8 @@ public class GameState {
             default:
                 step = new Vector2(0, 0);
         }
-        while (range--> 0 && pawn.fuel--> 0 && board.isValidField(actual)) {
+        while (range-- > 0 && pawn.fuel > 0 && board.isValidField(actual)) {
+            pawn.fuel--;
             res.add(actual.clone());
             actual.add(step);
         }
@@ -208,8 +278,8 @@ public class GameState {
         return new ArrayList<>(list);
     }
 
-    private boolean isValidPawnPlacement(Vector2 position,int size){
-        if(checkPawnsCollisions(position)){
+    private boolean isValidPawnPlacement(Vector2 position, int size) {
+        if (checkPawnsCollisions(position)) {
             return false;
         }
         int[][] view = new int[board.rows][board.cols];
@@ -218,8 +288,8 @@ public class GameState {
                 view[i][j] = board.cells[i][j].type.equals(Type.WALL) ? WALL_ID : -1;
             }
         }
-        for (int i = position.getX() - size/2, ip = 0; ip < size; ++i, ++ip) {
-            for (int j = position.getY() - size/2, jp = 0; jp < size; ++j, ++jp) {
+        for (int i = position.getX() - size / 2, ip = 0; ip < size; ++i, ++ip) {
+            for (int j = position.getY() - size / 2, jp = 0; jp < size; ++j, ++jp) {
                 if (i >= board.rows || i < 0 || j < 0 || j >= board.cols) {
                     return false;
                 }
@@ -231,12 +301,13 @@ public class GameState {
         return true;
     }
 
-    private boolean checkPawnsCollisions(Vector2 position){
-        return pawns.stream().anyMatch(pawn -> Math.abs(pawn.position.getY()-position.getY()) < pawn.size || Math.abs(pawn.position.getX()-position.getX()) < pawn.size);
+    private boolean checkPawnsCollisions(Vector2 position) {
+        return pawns.stream().anyMatch(pawn -> Math.abs(pawn.position.getY() - position.getY()) < pawn.size
+            || Math.abs(pawn.position.getX() - position.getX()) < pawn.size);
     }
 
-    public int getCellSize(){
-        return Math.min(1000/board.rows,1500/ board.cols);
+    public int getCellSize() {
+        return Math.min(1000 / board.rows, 1500 / board.cols);
     }
 
     public void draw() {
@@ -244,7 +315,11 @@ public class GameState {
         pawns.forEach(Pawn::draw);
     }
 
-    public int getBoardSize(){
+    public int getBoardSize() {
         return board.getSize();
+    }
+
+    public void updateTooltip(TooltipModule tooltips) {
+        pawns.forEach(p -> tooltips.setTooltipText(p.getGroup(),p.toString()));
     }
 }

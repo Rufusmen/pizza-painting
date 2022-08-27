@@ -14,6 +14,11 @@ public class Pawn extends Entity {
     public PawnColors[][] pawnColors;
     public int id;
     public int fuel;
+
+    public Group getGroup() {
+        return group;
+    }
+
     private Group group;
     private int cellSize;
     private int origY;
@@ -26,9 +31,9 @@ public class Pawn extends Entity {
         this.id = id;
     }
 
-    public Pawn init(int size, int player, Vector2 position) {
+    public Pawn init(int size, int player, Vector2 position,int fuel) {
         this.position = position;
-        this.fuel = 10;
+        this.fuel = fuel;
         owner = player;
         type = Type.PAWN;
         this.size = size;
@@ -124,6 +129,11 @@ public class Pawn extends Entity {
         vector2.sub(position);
         vector2.add(offset,offset);
         pawnColors[vector2.getX()][vector2.getY()].color = color;
+    }
+
+    @Override
+    public String toString(){
+        return String.format("id: %d, center position: (%d,%d), fuel: %d",id,position.getX(),position.getY(),fuel);
     }
 
     public boolean isOnPawn(Vector2 v) {

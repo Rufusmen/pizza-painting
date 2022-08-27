@@ -1,10 +1,13 @@
-gameloop
+read myColor:int
 read rows:int columns:int
 loop rows read board:word(columns)
-read entities:int
-loop entities read id:int paint:int x:int y:int
-loop entities loop 3 read pawnColor:word(3)
-write MOVE 0 0
+gameloop
+read diffs:int
+loop diffs read x:int y:int newColor:word(1)
+read pawns:int
+loop pawns read id:int paint:int x:int y:int
+loop pawns loop 3 read pawnColor:word(3)
+loop pawns write MOVE 0 0
 
 STATEMENT
 Paint more cells than your opponent
@@ -13,10 +16,11 @@ INPUT
 rows: Rows of board
 columns: Columns of board
 board: Board description
-entities: Number of your pawns
+diffs: Number of color changes during last turn.
+pawns: Number of your pawns
 id: Id of pawn
-x: x coordinate of pawn centre
-y: y coordinate of pawn centre
+x: x coordinate
+y: y coordinate
 paint: units of paint on pawn
 pawnColor: description of pawn coloring
 

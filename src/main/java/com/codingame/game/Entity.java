@@ -14,20 +14,29 @@ public class Entity {
     }
 
 
-
     public Entity() {
         type = Type.EMPTY;
-        owner = 0;
+        owner = -1;
     }
 
-    public void color(int color){
+    public void color(int color) {
         type = color == 1 ? Type.COLOR1 : Type.COLOR2;
+        owner = color == 1 ? 0 : 1;
     }
 
-    public int getOwner() { return this.owner; }
-    public void setOwner(int owner) { this.owner = owner; }
-    public void switchOwner(){owner = owner == 1 ? 2 : 1;}
-    public enum Type{
+    public int getOwner() {
+        return this.owner;
+    }
+
+    public void setOwner(int owner) {
+        this.owner = owner;
+    }
+
+    public void switchOwner() {
+        owner = owner == 1 ? 0 : 1;
+    }
+
+    public enum Type {
         EMPTY,
         WALL,
         COLOR1,
@@ -35,16 +44,16 @@ public class Entity {
         PAWN
     }
 
-    public static char typeToChar(Type type){
-        switch (type){
+    public static char typeToChar(Type type) {
+        switch (type) {
             case EMPTY:
-                return  '.';
+                return '.';
             case WALL:
-                return  'X';
+                return 'X';
             case COLOR1:
                 return '1';
             case COLOR2:
-                return  '2';
+                return '2';
             default:
                 return ' ';
         }
