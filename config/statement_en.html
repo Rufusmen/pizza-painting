@@ -51,6 +51,9 @@
         <p>
           Pawn is under control of a player that has more paint on it.
         </p>
+        <p>
+          Players gets information only about owned pawns. All pawns are visible on board as colored cells.
+        </p>
 
 
         <p><strong>Movement</strong></p>
@@ -82,6 +85,20 @@
           At the end of each turn paint is added to tank. Number of added paint units is equal to number of board cells in pawn's color that pawn is standing on.
         </p>
 
+        <div style="color: #7cc576;
+                    background-color: rgba(124, 197, 118,.1);
+                    padding: 2px;">
+          <p style="text-align:center"><b>Acknowledgments</b></p>
+
+          <p>This contribution was developed as engineering thesis at University of Wrocław, 2022.</p>
+          <p>The original idea from PIZZA competitions. (<a target="_blank" href="https://contest.pizza/static/tasks/2016/finals/malowanie.8c707ed678e8.pdf">original statement</a> [in Polish] ) </p>
+          <p>Authored by <i><b>Rafał Tatarczuk</b></i> (<a target="_blank" href="https://www.codingame.com/profile/cebcc25f6b699b57989415dc50a6f7768799112">@rufus</a>).</p>
+          <p>Supervised by <i><b>Jakub Kowalski</b></i> (<a target="_blank" href="https://www.codingame.com/profile/b528dd3b279d7578674a1129305918e0400484">@aCat</a>).</p>
+        </div>
+
+        <br />
+        <br />
+
         <div class="statement-section statement-protocol">
           <h1>
             <span class="icon icon-protocol">&nbsp;</span>
@@ -90,20 +107,20 @@
           <div class="blk">
             <div class="title">Initialization input</div>
             <div class="text">
-              <p><span class="statement-lineno">Line 1: three integers <var>color</var>: your color, <var>rows</var>:number of board rows, <var>cols</var>: number of board columns.</span></p>
-              <p><span class="statement-lineno">Next <var>rows</var> lines: one string with size <var>cols</var>: description of board row.</span></p>
+              <p><span class="statement-lineno">Line 1:</span> three integers <var>color</var>: your color, <var>rows</var>:number of board rows, <var>cols</var>: number of board columns.</p>
+              <p><span class="statement-lineno">Next <var>rows</var> lines:</span> one string with size <var>cols</var>: description of board row.</p>
             </div>
 
             <div class="title">Game turn input</div>
             <div class="text">
-              <p><span class="statement-lineno">Line 1: one int <var>diffsCnt</var>: number of fields that changed color during last turn</span></p>
+              <p><span class="statement-lineno">Line 1:</span> one int <var>diffsCnt</var>: number of fields that changed color during last turn</p>
               <p><span class="statement-lineno">Next <var>diffsCnt</var> lines: </span></p>
               <ul style="padding-top: 0; padding-bottom: 0;">
                 <li>int <var>x</var>: x position of cell</li>
                 <li>int <var>y</var>: y position of cell</li>
                 <li>char <var>color</var>: new cell color</li>
               </ul>
-              <p><span class="statement-lineno">Next line: one int <var>pawnsCnt</var>: number of pawns under your control.</span></p>
+              <p><span class="statement-lineno">Next line:</span> one int <var>pawnsCnt</var>: number of pawns under your control.</p>
               <p><span class="statement-lineno">Next <var>pawnsCnt</var> lines:</span> pawns description: </p>
               <ul style="padding-top: 0; padding-bottom: 0;">
                 <li>int <var>id</var>: id of pawn</li>
