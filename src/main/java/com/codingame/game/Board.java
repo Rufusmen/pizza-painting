@@ -4,9 +4,11 @@ import static com.codingame.game.Util.convert;
 import static com.codingame.game.util.LineSeparator.lines;
 
 import com.codingame.game.Entity.Type;
+import com.codingame.gameengine.core.Tooltip;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.codingame.gameengine.module.entities.Group;
 import com.codingame.gameengine.module.entities.Rectangle;
+import com.codingame.gameengine.module.tooltip.TooltipModule;
 import com.google.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +47,14 @@ public class Board {
         }
 
         generateWalls();
+    }
 
+    public void initTooltip(TooltipModule tooltip){
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                tooltip.setTooltipText(cells[i][j].rectangle,String.format("row: %d%ncol: %d",i,j));
+            }
+        }
     }
 
     public boolean isValidField(Vector2 v){

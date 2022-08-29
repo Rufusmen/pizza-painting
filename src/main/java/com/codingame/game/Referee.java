@@ -5,6 +5,7 @@ import com.codingame.gameengine.core.AbstractPlayer.TimeoutException;
 import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.GameManager;
 import com.codingame.gameengine.core.MultiplayerGameManager;
+import com.codingame.gameengine.module.endscreen.EndScreenModule;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.codingame.gameengine.module.entities.Sprite;
 import com.codingame.gameengine.module.entities.Text;
@@ -12,6 +13,7 @@ import com.codingame.gameengine.module.tooltip.TooltipModule;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -28,21 +30,23 @@ public class Referee extends AbstractReferee {
 
     @Inject
     private TooltipModule tooltips;
+    @Inject
+    private EndScreenModule endScreenModule;
 
     private GameState state;
-    private List<Action> validActions;
-    private Random random;
+
+    private final Map<Integer,Text> texts = new HashMap<>();
 
     @Override
     public void init() {
-        random = new Random(gameManager.getSeed());
+        Random random = new Random(gameManager.getSeed());
         state = gameStateProvider.get();
         state.init(random);
         drawBackground();
         drawHud();
         drawGrids();
 
-        int size = state.getBoardSize();
+        state.initTooltip(tooltips);
 
         sendInitialInput();
 
@@ -64,8 +68,7 @@ public class Referee extends AbstractReferee {
     }
 
     private void drawGrids() {
-        List<Integer> colors = gameManager.getPlayers().stream().map(AbstractMultiplayerPlayer::getColorToken).collect(Collectors.toList());
-        state.drawInit(0, 0, colors.get(0), colors.get(1));
+        state.drawInit(0, 0,0xf7ef05, 0x22a1e4);
     }
 
     private void drawHud() {
@@ -92,12 +95,13 @@ public class Referee extends AbstractReferee {
                 .setFillColor(0xffffff);
 
             Text text = graphicEntityModule.createText(player.getNicknameToken())
-                .setX(x)
+                .setX(x + 50)
                 .setY(y + 120)
                 .setZIndex(20)
                 .setFontSize(40)
                 .setFillColor(0)
                 .setAnchor(0.5);
+            texts.put(player.getIndex(),text);
 
             Sprite avatar = graphicEntityModule.createSprite()
                 .setX(x)
@@ -161,21 +165,32 @@ public class Referee extends AbstractReferee {
         }
         state.resolveActions(actions);
         state.updateTooltip(tooltips);
+        updateScore();
+    }
+
+    private void updateScore() {
+        Map<Integer, Integer> score = state.getScore();
+        Player p0 = gameManager.getPlayers().get(0);
+        Player p1 = gameManager.getPlayers().get(1);
+        p0.setScore(score.get(0));
+        p1.setScore(score.get(1));
+        texts.get(0).setText(p0.getNicknameToken() + " score: " + score.get(0));
+        texts.get(1).setText(p1.getNicknameToken() + " score: " + score.get(1));
     }
 
     @Override
     public void onEnd(){
         endGame();
+        endScreenModule.setTitleRankingsSprite("logoend.png");
+        endScreenModule.setScores(gameManager.getPlayers().stream().mapToInt(p -> p.getScore()).toArray());
     }
 
     private void endGame() {
-        Map<Integer, Integer> score = state.getScore();
+
         gameManager.endGame();
 
         Player p0 = gameManager.getPlayers().get(0);
         Player p1 = gameManager.getPlayers().get(1);
-        p0.setScore(score.get(0));
-        p1.setScore(score.get(1));
         if (p0.getScore() > p1.getScore()) {
             p1.hud.setAlpha(0.3);
             setWinner(p0);

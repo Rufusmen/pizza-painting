@@ -32,9 +32,16 @@ public class GameState {
         int cellSize = getCellSize();
         int bigOrigX = (1080 - board.rows * cellSize) / 2;
         int bigOrigY = 10;
+        int c1D = 0xd1c004;
+        int c2D = 0x0880bf;
         board.drawInit(bigOrigX, bigOrigY, cellSize, i1, c1, c2);
-        pawns.forEach(pawn -> pawn.drawInit(bigOrigX, bigOrigY, cellSize, i, graphicEntityModule, c1, c2));
+        pawns.forEach(pawn -> pawn.drawInit(bigOrigX, bigOrigY, cellSize, i, graphicEntityModule, c1D, c2D));
     }
+    public void initTooltip(TooltipModule tooltip){
+        board.initTooltip(tooltip);
+    }
+
+
 
     public List<String> initialBoardInput() {
         List<String> inputView = new ArrayList<>();
