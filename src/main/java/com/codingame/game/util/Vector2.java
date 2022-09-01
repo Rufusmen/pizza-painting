@@ -1,4 +1,4 @@
-package com.codingame.game;
+package com.codingame.game.util;
 
 public class Vector2 implements Cloneable{
     private int x;

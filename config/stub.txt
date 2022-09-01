@@ -1,19 +1,23 @@
 read myColor:int
 read rows:int columns:int
+read maxShootDist:int
 loop rows read board:word(columns)
 gameloop
 read diffs:int
 loop diffs read x:int y:int newColor:word(1)
 read pawns:int
-loop pawns read id:int paint:int x:int y:int loop 3 read pawnColor:word(3)
+loop pawns read id:int paint:int x:int y:int
+loop pawns loop 3 read pawnColor:word(3)
 loop pawns write MOVE 0 0
 
 STATEMENT
 Paint more cells than your opponent
 
 INPUT
+myColor: players color id
 rows: Rows of board
 columns: Columns of board
+maxShootDist: Maximal length of shooting distance
 board: Board description
 diffs: Number of color changes during last turn.
 pawns: Number of your pawns

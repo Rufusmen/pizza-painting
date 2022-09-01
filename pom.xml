@@ -5,14 +5,6 @@
 	<groupId>com.codingame.game</groupId>
 	<artifactId>painting</artifactId>
 	<version>1.0-SNAPSHOT</version>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 
   <properties>
         <gamengine.version>3.15.2</gamengine.version>
@@ -49,4 +41,18 @@
 			<version>4.0.2</version>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<source>1.8</source>
+					<reportOutputDirectory>javadoc</reportOutputDirectory>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

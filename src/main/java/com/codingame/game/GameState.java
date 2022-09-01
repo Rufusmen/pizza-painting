@@ -1,7 +1,11 @@
 package com.codingame.game;
 
 import com.codingame.game.Action.ActionType;
-import com.codingame.game.Entity.Type;
+import com.codingame.game.board.Board;
+import com.codingame.game.board.Entity;
+import com.codingame.game.board.Entity.Type;
+import com.codingame.game.board.Pawn;
+import com.codingame.game.util.Vector2;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.codingame.gameengine.module.tooltip.TooltipModule;
 import com.google.common.base.Joiner;
@@ -16,6 +20,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Main class containing game state and game logic
+ */
 public class GameState {
 
     @Inject
@@ -23,29 +30,42 @@ public class GameState {
 
     @Inject
     private GraphicEntityModule graphicEntityModule;
-    private List<Pawn> pawns = new ArrayList<>();
+    private final List<Pawn> pawns = new ArrayList<>();
     private Type[][] prevView = new Type[0][0];
 
     private static final int WALL_ID = 42;
 
-    public void drawInit(int i, int i1, int c1, int c2) {
+    private int maxShootDist;
+
+    /**
+     * Initializes all graphical entities
+     *
+     * @param pawnLineColor color of pawn lines
+     * @param cellLineColor color of cell lines
+     * @param c1            color of player1
+     * @param c2            color of player2
+     */
+    public void drawInit(int pawnLineColor, int cellLineColor, int c1, int c2) {
         int cellSize = getCellSize();
         int bigOrigX = (1080 - board.rows * cellSize) / 2;
         int bigOrigY = 10;
         int c1D = 0xd1c004;
         int c2D = 0x0880bf;
-        board.drawInit(bigOrigX, bigOrigY, cellSize, i1, c1, c2);
-        pawns.forEach(pawn -> pawn.drawInit(bigOrigX, bigOrigY, cellSize, i, graphicEntityModule, c1D, c2D));
+        board.drawInit(bigOrigX, bigOrigY, cellSize, cellLineColor, c1, c2);
+        pawns.forEach(pawn -> pawn.drawInit(bigOrigX, bigOrigY, cellSize, pawnLineColor, graphicEntityModule, c1D, c2D));
     }
-    public void initTooltip(TooltipModule tooltip){
+
+    public void initTooltip(TooltipModule tooltip) {
         board.initTooltip(tooltip);
     }
 
 
-
+    /**
+     * @return list of string with board description for players' input.
+     */
     public List<String> initialBoardInput() {
         List<String> inputView = new ArrayList<>();
-        inputView.add(String.format("%d %d", board.rows, board.cols));
+        inputView.add(String.format("%d %d %d", board.rows, board.cols, maxShootDist));
         Type[][] view = new Type[board.rows][board.cols];
         for (int i = 0; i < board.rows; ++i) {
             for (int j = 0; j < board.cols; ++j) {
@@ -67,6 +87,9 @@ public class GameState {
         return inputView;
     }
 
+    /**
+     * @return list of strings with changes on board
+     */
     public List<String> boardInput() {
         List<String> inputView = new ArrayList<>();
         Type[][] view = new Type[board.rows][board.cols];
@@ -93,6 +116,9 @@ public class GameState {
         return inputView;
     }
 
+    /**
+     * @return map with players scores.
+     */
     public Map<Integer, Integer> getScore() {
         Map<Integer, Integer> score = new HashMap<>();
         int score1 = 0;
@@ -130,9 +156,13 @@ public class GameState {
 
     }
 
+    /**
+     * @param player id of a player
+     * @return pawns information for given player
+     */
     public List<String> pawnInput(int player) {
         List<String> inputView = new ArrayList<>();
-        List<Pawn> myPawns = pawns.stream().filter(pawn -> pawn.owner == player).collect(Collectors.toList());
+        List<Pawn> myPawns = pawns.stream().filter(pawn -> pawn.getOwner() == player).collect(Collectors.toList());
         inputView.add(String.valueOf(myPawns.size()));
         myPawns.forEach(p -> {
             inputView.add(String.format("%d %d %d %d", p.id, p.fuel, p.position.getX(), p.position.getY()));
@@ -146,30 +176,45 @@ public class GameState {
         return inputView;
     }
 
+    /**
+     * @param random random number generator
+     */
     public void init(Random random) {
         board.init(random);
         int pawnsNo = 1 + random.nextInt(3);
+        maxShootDist = 5 + random.nextInt(6);
         int id = 0;
-        int fuel = random.nextInt(20)+20;
+        int fuel = random.nextInt(20) + 20;
         while (pawnsNo-- > 0) {
             Vector2 startPos = new Vector2(2 + random.nextInt(board.rows - 4), random.nextInt(10));
             while (!board.isValidField(startPos) || !isValidPawnPlacement(startPos, 3)) {
                 startPos = new Vector2(2 + random.nextInt(board.rows - 4), random.nextInt(10));
             }
-            pawns.add(new Pawn(id++).init(3, 0, startPos,fuel));
-            pawns.add(new Pawn(id++).init(3, 1, new Vector2(board.rows - 1 - startPos.getX(), board.cols - 1 - startPos.getY()),fuel));
+            pawns.add(new Pawn(id++).init(3, 0, startPos, fuel));
+            pawns.add(new Pawn(id++).init(3, 1, new Vector2(board.rows - 1 - startPos.getX(), board.cols - 1 - startPos.getY()), fuel));
         }
     }
 
+    /**
+     * @param player id of a player
+     * @return number of pawns owned by given player
+     */
     public int getPawnsCnt(int player) {
-        return (int) pawns.stream().filter(pawn -> pawn.owner == player).count();
+        return (int) pawns.stream().filter(pawn -> pawn.getOwner() == player).count();
     }
 
+    /**
+     * Resolves all actions. MOVE actions are resolved first. In case of collisions, movement of colliding pawns is rolled back.
+     *
+     * @param actions list of actions that should be resolved.
+     */
     public void resolveActions(List<Action> actions) {
+        pawns.forEach(p -> p.usedThisTurn = false);
         List<Vector2> prevPositions = pawns.stream().map(pawn -> pawn.position.clone()).collect(Collectors.toList());
         actions.stream().filter(action -> action.type.equals(ActionType.MOVE)).forEach(action -> {
             Pawn pawn = pawns.get(action.pawn);
-            if (pawn.owner == action.player.getIndex()) {
+            if (pawn.getOwner() == action.player.getIndex() && !pawn.usedThisTurn) {
+                pawn.usedThisTurn = true;
                 pawn.move(action.direction);
             }
         });
@@ -184,7 +229,8 @@ public class GameState {
         Set<Vector2> color2 = new HashSet<>();
         actions.stream().filter(action -> action.type.equals(ActionType.SHOOT)).forEach(action -> {
             Pawn pawn = pawns.get(action.pawn);
-            if (pawn.owner == action.player.getIndex()) {
+            if (pawn.getOwner() == action.player.getIndex() && !pawn.usedThisTurn) {
+                pawn.usedThisTurn = true;
                 if (action.player.getIndex() == 0) {
                     color1.addAll(shoot(pawn, action));
                 } else {
@@ -248,8 +294,9 @@ public class GameState {
             default:
                 step = new Vector2(0, 0);
         }
-        while (range-- > 0 && pawn.fuel > 0 && board.isValidField(actual)) {
-            pawn.fuel--;
+        range = Math.min(Math.min(range,pawn.fuel),maxShootDist);
+        pawn.fuel-=range;
+        while (range-- > 0 && board.isValidField(actual)) {
             res.add(actual.clone());
             actual.add(step);
         }
@@ -317,16 +364,16 @@ public class GameState {
         return Math.min(1000 / board.rows, 1500 / board.cols);
     }
 
+
+    /**
+     * Updates all graphical entities
+     */
     public void draw() {
         board.draw();
         pawns.forEach(Pawn::draw);
     }
 
-    public int getBoardSize() {
-        return board.getSize();
-    }
-
     public void updateTooltip(TooltipModule tooltips) {
-        pawns.forEach(p -> tooltips.setTooltipText(p.getGroup(),p.toString()));
+        pawns.forEach(p -> tooltips.setTooltipText(p.getGroup(), p.toString()));
     }
 }

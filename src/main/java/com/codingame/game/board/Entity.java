@@ -1,11 +1,14 @@
-package com.codingame.game;
+package com.codingame.game.board;
 
 import com.codingame.gameengine.module.entities.Rectangle;
 
+/**
+ * Basic representation of entity on board.
+ */
 public class Entity {
 
     protected int owner;
-    protected Type type;
+    public Type type;
     public Rectangle rectangle;
 
     public Entity(int owner, Type type) {

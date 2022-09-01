@@ -1,7 +1,10 @@
-package com.codingame.game;
+package com.codingame.game.board;
 
 import com.codingame.gameengine.module.entities.Rectangle;
 
+/**
+ * Representation of single cell on pawn.
+ */
 public class PawnColors {
 
     public PawnColors(int color) {

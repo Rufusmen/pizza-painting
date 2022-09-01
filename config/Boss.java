@@ -10,6 +10,7 @@ class Player {
         int co = in.nextInt();
         int row = in.nextInt();
         int col = in.nextInt();
+        int dst = in.nextInt();
         char[][] map = new char[row][col];
         for (int i = 0; i < row; i++) {
             String str = in.next();

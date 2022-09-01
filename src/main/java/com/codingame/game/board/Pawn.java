@@ -1,19 +1,30 @@
-package com.codingame.game;
+package com.codingame.game.board;
 
-import static com.codingame.game.Util.convert;
+import static com.codingame.game.util.Util.convert;
 
+import com.codingame.game.util.Vector2;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.codingame.gameengine.module.entities.Group;
 import com.codingame.gameengine.module.entities.Rectangle;
 import java.util.Arrays;
 
+/**
+ * Representation of a single pawn on board
+ */
 public class Pawn extends Entity {
 
     public int size;
+    /**
+     * Position of the center of the pawn.
+     */
     public Vector2 position;
+    /**
+     * Colors of each pawn's cell.
+     */
     public PawnColors[][] pawnColors;
     public int id;
     public int fuel;
+    public boolean usedThisTurn = false;
 
     public Group getGroup() {
         return group;
@@ -47,6 +58,9 @@ public class Pawn extends Entity {
         return this;
     }
 
+    /**
+     * Check which player has more paint on it. Switches owner if needed
+     */
     public void checkOwnership() {
         int ownerColorCnt = Arrays.stream(pawnColors).mapToInt(a -> (int) Arrays.stream(a).filter(b -> b.color == owner+1).count()).sum();
         if (ownerColorCnt <= (size * size / 2)) {

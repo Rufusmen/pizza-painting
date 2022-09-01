@@ -1,4 +1,4 @@
-package com.codingame.game;
+package com.codingame.game.board;
 
 
 import java.util.List;

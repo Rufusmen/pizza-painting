@@ -1,6 +1,5 @@
 package com.codingame.game;
 
-import com.codingame.gameengine.core.AbstractMultiplayerPlayer;
 import com.codingame.gameengine.core.AbstractPlayer.TimeoutException;
 import com.codingame.gameengine.core.AbstractReferee;
 import com.codingame.gameengine.core.GameManager;
@@ -17,8 +16,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.stream.Collectors;
 
+/**
+ * Main class of the game.
+ */
 public class Referee extends AbstractReferee {
 
     @Inject
@@ -147,7 +148,6 @@ public class Referee extends AbstractReferee {
         sendPlayerInputs();
 
         // Read inputs
-        state.draw();
         List<Action> actions = new ArrayList<>();
         for (Player player : gameManager.getActivePlayers()) {
             try {
@@ -164,6 +164,7 @@ public class Referee extends AbstractReferee {
             }
         }
         state.resolveActions(actions);
+        state.draw();
         state.updateTooltip(tooltips);
         updateScore();
     }

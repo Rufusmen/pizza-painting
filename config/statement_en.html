@@ -77,9 +77,9 @@
         <p>
           Player can give <action>SHOOT</action> command with <var>direction</var> and <var>length</var>.
         </p>
-          This will cause coloring strip of size 1 x max(<var>paint</var>,<var>length</var>) counting from edge of pawn.
+        This will cause coloring strip of size 1 x max(<var>paint</var>, <var>length</var>, <var>maxShootDist</var>) counting from edge of pawn.
         <p>
-          Strip of paint will be stopped by board end and walls.
+          Strip of paint will be stopped by board ends and walls.
         </p>
         <p>
           At the end of each turn paint is added to tank. Number of added paint units is equal to number of board cells in pawn's color that pawn is standing on.
@@ -107,7 +107,7 @@
           <div class="blk">
             <div class="title">Initialization input</div>
             <div class="text">
-              <p><span class="statement-lineno">Line 1:</span> three integers <var>color</var>: your color, <var>rows</var>:number of board rows, <var>cols</var>: number of board columns.</p>
+              <p><span class="statement-lineno">Line 1:</span> four integers <var>color</var>: your color, <var>rows</var>:number of board rows, <var>cols</var>: number of board columns and <var>maxShootDist</var> maximal shooting distance.</p>
               <p><span class="statement-lineno">Next <var>rows</var> lines:</span> one string with size <var>cols</var>: description of board row.</p>
             </div>
 
@@ -156,7 +156,45 @@
             <var>rows</var> and <var>cols</var> are integers from range <const>[10,50]</const>.
            <br />
             Each player will start with same number of pawns from rang <const>[1,3]</const>.
+            <br />
+            <var>maxShootDist</var> is an integer from range <const>[5,10]</const>.
           </div>
+
+          <div class="statement-section statement-expertrules">
+            <h1>
+              <span class="icon icon-expertrules">&nbsp;</span>
+              <span>Expert Rules</span>
+            </h1>
+
+            <div class="statement-expert-rules-content">
+              The source code can be found here: <a target="_blank"
+                                                    href="https://github.com/Rufusmen/pizza-painting">github</a>.
+              <p>
+                All <action>MOVE</action> actions are resolved simultaneously.
+              </p>
+              <p>
+                During movement some collisions might happen.
+              </p>
+              <ul style="padding-top: 0;">
+                <li> - pawns can be out of board borders</li>
+                <li> - pawns may collide with walls</li>
+                <li> - there might be collision between two or more pawns</li>
+              </ul>
+              <p>
+                All colliding pawns are moved back to their previous position.
+              </p>
+              <p>
+                Collision check and rollback procedure is launched until there is no collisions left.
+              </p>
+              <p>
+                <action>SHOOT</action> actions are resolved after pawns movement.
+              </p>
+              <p>
+                If one cell will be covered by two paint strips of different color it won't change it's color at all.
+              </p>
+            </div>
+          </div>
+        </div>
         </div>
       </div>
 

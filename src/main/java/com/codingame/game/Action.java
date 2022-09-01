@@ -1,5 +1,8 @@
 package com.codingame.game;
 
+/**
+ * Representation object for player command
+ */
 public class Action {
     public final int pawn;
     public final int direction;

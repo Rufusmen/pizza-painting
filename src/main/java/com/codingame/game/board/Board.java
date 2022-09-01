@@ -1,16 +1,15 @@
-package com.codingame.game;
+package com.codingame.game.board;
 
-import static com.codingame.game.Util.convert;
+import static com.codingame.game.util.Util.convert;
 import static com.codingame.game.util.LineSeparator.lines;
 
-import com.codingame.game.Entity.Type;
-import com.codingame.gameengine.core.Tooltip;
+import com.codingame.game.board.Entity.Type;
+import com.codingame.game.util.Vector2;
 import com.codingame.gameengine.module.entities.GraphicEntityModule;
 import com.codingame.gameengine.module.entities.Group;
 import com.codingame.gameengine.module.entities.Rectangle;
 import com.codingame.gameengine.module.tooltip.TooltipModule;
 import com.google.inject.Inject;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -27,14 +26,13 @@ public class Board {
     private int color1;
     private int color2;
 
-    private Group entity;
-
-    private int origX;
-    private int origY;
-    private int cellSize;
     private Random random;
 
 
+    /**
+     * Generates board.
+     * @param random random number generator.
+     */
     public void init(Random random){
         this.random = random;
         rows = 20 + random.nextInt(10);
@@ -65,10 +63,7 @@ public class Board {
     public void drawInit(int origX, int origY, int cellSize, int lineColor,int c1, int c2) {
         color1 = c1;
         color2 = c2;
-        this.origX = origX;
-        this.origY = origY;
-        this.cellSize = cellSize;
-        this.entity = graphicEntityModule.createGroup();
+        Group entity = graphicEntityModule.createGroup();
 
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < cols; ++j) {
@@ -120,11 +115,19 @@ public class Board {
         }
     }
 
+    /**
+     * Colors cell with given color
+     * @param color color id
+     * @param v position of cell
+     */
     public void color(int color,Vector2 v){
         cells[v.getX()][v.getY()].color(color);
-
     }
 
+    /**
+     * Adds paint to pawn's tank
+     * @param p pawn that should be refilled
+     */
     public void refill(Pawn p) {
         int offset = p.size / 2;
         for (int i = p.position.getX() - offset, ip = 0; ip < p.size; ++i, ++ip) {
@@ -186,8 +189,5 @@ public class Board {
         return matrix;
     }
 
-    public int getSize(){
-        return cols*rows;
-    }
 
 }

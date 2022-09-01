@@ -6,8 +6,14 @@ import com.codingame.gameengine.module.entities.Group;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Player object.
+ */
 public class Player extends AbstractMultiplayerPlayer {
     public Group hud;
+    /**
+     * Number of units under player control.
+     */
     public int pawns;
     
     @Override
@@ -19,6 +25,11 @@ public class Player extends AbstractMultiplayerPlayer {
         this.pawns = pawns;
     }
 
+    /**
+     * Parses player outputs to action objects.
+     *
+     * @return list of player's actions
+     */
     public List<Action> getActions() throws TimeoutException, NumberFormatException {
         List<Action> actions = new ArrayList<>();
         for (String output: getOutputs()
