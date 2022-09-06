@@ -120,7 +120,7 @@ public class Referee extends AbstractReferee {
     private void sendInitialInput() {
         List<String> board = state.initialBoardInput();
         for (Player p : gameManager.getActivePlayers()) {
-            p.sendInputLine(String.valueOf(p.getIndex()+1));
+            p.sendInputLine((p.getIndex() + 1) + " " + state.initialConsts());
             board.forEach(p::sendInputLine);
         }
     }

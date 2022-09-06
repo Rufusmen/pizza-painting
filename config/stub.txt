@@ -1,6 +1,4 @@
-read myColor:int
-read rows:int columns:int
-read maxShootDist:int
+read myColor:int rows:int columns:int maxShootDist:int
 loop rows read board:word(columns)
 gameloop
 read diffs:int

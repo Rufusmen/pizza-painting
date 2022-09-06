@@ -61,12 +61,15 @@ public class GameState {
     }
 
 
+    public String initialConsts(){
+        return String.format("%d %d %d", board.rows, board.cols, maxShootDist);
+    }
+
     /**
      * @return list of string with board description for players' input.
      */
     public List<String> initialBoardInput() {
         List<String> inputView = new ArrayList<>();
-        inputView.add(String.format("%d %d %d", board.rows, board.cols, maxShootDist));
         Type[][] view = new Type[board.rows][board.cols];
         for (int i = 0; i < board.rows; ++i) {
             for (int j = 0; j < board.cols; ++j) {
