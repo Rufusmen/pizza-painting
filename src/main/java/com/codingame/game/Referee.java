@@ -164,8 +164,8 @@ public class Referee extends AbstractReferee {
             }
         }
         state.resolveActions(actions);
-        state.draw();
         state.updateTooltip(tooltips);
+        state.draw();
         updateScore();
     }
 

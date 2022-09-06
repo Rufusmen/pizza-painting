@@ -57,6 +57,7 @@ public class GameState {
 
     public void initTooltip(TooltipModule tooltip) {
         board.initTooltip(tooltip);
+        updateTooltip(tooltip);
     }
 
 

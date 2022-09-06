@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>com.codingame.gameengine</groupId>
 			<artifactId>module-tooltip</artifactId>
-			<version>3.4.2</version>
+			<version>${gamengine.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.codingame.gameengine</groupId>
