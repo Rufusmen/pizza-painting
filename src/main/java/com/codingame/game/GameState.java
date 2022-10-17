@@ -49,8 +49,8 @@ public class GameState {
         int cellSize = getCellSize();
         int bigOrigX = (1080 - board.rows * cellSize) / 2;
         int bigOrigY = 10;
-        int c1D = 0xd1c004;
-        int c2D = 0x0880bf;
+        int c1D = 0xd79a1c;
+        int c2D = 0x0823bf;
         board.drawInit(bigOrigX, bigOrigY, cellSize, cellLineColor, c1, c2);
         pawns.forEach(pawn -> pawn.drawInit(bigOrigX, bigOrigY, cellSize, pawnLineColor, graphicEntityModule, c1D, c2D));
     }

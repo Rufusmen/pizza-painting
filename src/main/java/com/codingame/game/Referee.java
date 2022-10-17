@@ -74,8 +74,8 @@ public class Referee extends AbstractReferee {
 
     private void drawHud() {
         for (Player player : gameManager.getPlayers()) {
-            int x = 1920 - 280;
-            int y = player.getIndex() == 0 ? 520 : 1080 - 220;
+            int x = 1920 - 240;
+            int y = player.getIndex() == 0 ? 500 : 1080 - 240;
 
             graphicEntityModule
                 .createRectangle()
@@ -95,9 +95,9 @@ public class Referee extends AbstractReferee {
                 .setLineWidth(0)
                 .setFillColor(0xffffff);
 
-            Text text = graphicEntityModule.createText(player.getNicknameToken())
-                .setX(x + 50)
-                .setY(y + 120)
+            Text text = graphicEntityModule.createText(player.getNicknameToken() + "\nScore: 0")
+                .setX(x + 10)
+                .setY(y + 140)
                 .setZIndex(20)
                 .setFontSize(40)
                 .setFillColor(0)
@@ -129,6 +129,10 @@ public class Referee extends AbstractReferee {
         List<String> board = state.boardInput();
         for (Player p : gameManager.getActivePlayers()) {
             p.setPawns(state.getPawnsCnt(p.getIndex()));
+            if(p.pawns == 0){
+                p.setScore(0);
+                onEnd();
+            }
             p.sendInputLine(String.valueOf(board.size()));
             board.forEach(p::sendInputLine);
             state.pawnInput(p.getIndex()).forEach(p::sendInputLine);
@@ -175,8 +179,8 @@ public class Referee extends AbstractReferee {
         Player p1 = gameManager.getPlayers().get(1);
         p0.setScore(score.get(0));
         p1.setScore(score.get(1));
-        texts.get(0).setText(p0.getNicknameToken() + " score: " + score.get(0));
-        texts.get(1).setText(p1.getNicknameToken() + " score: " + score.get(1));
+        texts.get(0).setText(p0.getNicknameToken() + "\nScore: " + score.get(0));
+        texts.get(1).setText(p1.getNicknameToken() + "\nScore: " + score.get(1));
     }
 
     @Override
