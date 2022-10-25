@@ -21,7 +21,7 @@
       <span class="icon icon-rules">&nbsp;</span>
       <span>Rules</span>
     </h1>
-    <div>
+
       <div class="statement-rules-content">
         <p><strong>The board</strong></p>
         <p>The board is a grid, where the top-left corner is the cell <const>(0,0)</const>. The map is randomly generated at the start of each game.
@@ -32,12 +32,12 @@
         <ul style="padding-top: 0;">
           <li> empty (<const>.</const>) : it's not painted by any player.</li>
           <li> wall (<const>X</const>) : cannot be painted and pawns cannot move on wall cell.</li>
-          <li> color (<const>1</const> or <const>2</const>): cell painted by player.</li>
+          <li> color (<const>1</const> or <const>2</const>): cell painted by a player.</li>
         </ul>
 
         <p><strong>Pawns</strong></p>
         <p>
-          Each pawn is represented by square grid of size <const>3x3</const>.
+          Each pawn is represented by a square grid of size <const>3x3</const>.
         </p>
         <p>
           Pawns cannot intersect.
@@ -77,13 +77,15 @@
         <p>
           Player can give <action>SHOOT</action> command with <var>direction</var> and <var>length</var>.
         </p>
-        This will cause coloring strip of size 1 x max(<var>paint</var>, <var>length</var>, <var>maxShootDist</var>) counting from edge of pawn.
+        This will cause coloring strip of size <const>1 x min</const>(<var>paint</var>, <var>length</var>, <var>maxShootDist</var>) counting from edge of the pawn.
         <p>
           Strip of paint will be stopped by board ends and walls.
         </p>
         <p>
-          At the end of each turn paint is added to tank. Number of added paint units is equal to number of board cells in pawn's color that pawn is standing on.
+          At the end of each turn paint is added to each pawn's tank. Number of added paint units is equal to the number of board cells in pawn's color that pawn is standing on.
         </p>
+      </div>
+  </div>
         <div class="statement-section statement-expertrules">
           <h1>
             <span class="icon icon-expertrules">&nbsp;</span>
@@ -94,6 +96,7 @@
             The source code can be found here: <a target="_blank"
                                                   href="https://github.com/Rufusmen/pizza-painting">github</a>.
             <br />
+            <br />
             <p>
               All <action>MOVE</action> actions are resolved simultaneously.
             </p>
@@ -101,18 +104,21 @@
               During movement some collisions might happen.
             </p>
             <ul style="padding-top: 0;">
-              <li> - pawns can be out of board borders</li>
-              <li> - pawns may collide with walls</li>
-              <li> - there might be collision between two or more pawns</li>
+              <li> pawns can be out of board borders</li>
+              <li> pawns may collide with walls</li>
+              <li> there might be collision between two or more pawns</li>
             </ul>
             <p>
-              All colliding pawns are moved back to their previous position.
+              All colliding pawns are moved back to their previous positions.
             </p>
             <p>
-              Collision check and rollback procedure is launched until there is no collisions left.
+              Collision check and rollback procedure is launched until there are no collisions left.
             </p>
             <p>
               <action>SHOOT</action> actions are resolved after pawns movement.
+            </p>
+            <p>
+              At the end of the turn change of the ownership is resolved before the tank refill.
             </p>
             <p>
               If one cell will be covered by two paint strips of different color it won't change it's color at all.
@@ -125,7 +131,7 @@
                     padding: 2px;">
           <p style="text-align:center"><b>Acknowledgments</b></p>
 
-          <p>This contribution was developed as engineering thesis at University of Wrocław, 2022.</p>
+          <p>This contribution was developed as a part of engineering thesis at University of Wrocław, 2022.</p>
           <p>The original idea from PIZZA competitions. (<a target="_blank" href="https://contest.pizza/static/tasks/2016/finals/malowanie.8c707ed678e8.pdf">original statement</a> [in Polish] ) </p>
           <p>Authored by <i><b>Rafał Tatarczuk</b></i> (<a target="_blank" href="https://www.codingame.com/profile/cebcc25f6b699b57989415dc50a6f7768799112">@rufus</a>).</p>
           <p>Supervised by <i><b>Jakub Kowalski</b></i> (<a target="_blank" href="https://www.codingame.com/profile/b528dd3b279d7578674a1129305918e0400484">@aCat</a>).</p>
@@ -137,7 +143,7 @@
         <div class="statement-section statement-protocol">
           <h1>
             <span class="icon icon-protocol">&nbsp;</span>
-            <span>Game Input</span>
+            <span>The Game Input</span>
           </h1>
           <div class="blk">
             <div class="title">Initialization input</div>
@@ -162,10 +168,8 @@
                 <li>int <var>paint</var>: number of paint units in tank</li>
                 <li>int <var>x</var>: x position of center of pawn</li>
                 <li>int <var>y</var>: y position of center of pawn</li>
+                <li>word(9) <var>pawnColor</var>: 9 chars with description of pawn cells colors. 3 for each row. </li>
               </ul>
-
-              <p><span class="statement-lineno">Next <var>pawnsCnt</var> x 3 lines:</span> one string with size 3: description of pawn cells colors in same order as pawn description above. </p>
-
             </div>
           </div>
 

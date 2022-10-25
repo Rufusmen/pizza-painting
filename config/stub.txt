@@ -4,8 +4,7 @@ gameloop
 read diffs:int
 loop diffs read x:int y:int newColor:word(1)
 read pawns:int
-loop pawns read id:int paint:int x:int y:int
-loop pawns loop 3 read pawnColor:word(3)
+loop pawns read id:int paint:int x:int y:int pawnColor:word(9)
 loop pawns write MOVE 0 0
 
 STATEMENT

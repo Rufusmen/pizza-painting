@@ -103,9 +103,8 @@ public class Player1 {
                 int fuel = in.nextInt();
                 int x = in.nextInt();
                 int y = in.nextInt();
-                for (int j = 0; j < 3; j++) {
                     String str = in.next();
-                }
+
                 if(!tryShoot(id,fuel,x,y)){
                     move(id,x,y);
                 }

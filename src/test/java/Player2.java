@@ -34,10 +34,9 @@ public class Player2 {
                 int x = in.nextInt();
                 int y = in.nextInt();
                 System.err.println(fuel);
-                for (int j = 0; j < 3; j++) {
                     String str = in.next();
                     //System.err.println(str);
-                }
+
                 if (cycle % 4 == 0) {
                     System.out.printf("SHOOT %d %d 5%n", id, cycle >= 16 ? cycle / 4 : cycle / 4 + 1);
                 } else {

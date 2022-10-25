@@ -169,13 +169,10 @@ public class GameState {
         List<Pawn> myPawns = pawns.stream().filter(pawn -> pawn.getOwner() == player).collect(Collectors.toList());
         inputView.add(String.valueOf(myPawns.size()));
         myPawns.forEach(p -> {
-            inputView.add(String.format("%d %d %d %d", p.id, p.fuel, p.position.getX(), p.position.getY()));
-            for (int i = 0; i < p.size; i++) {
-                inputView.add(Arrays.stream(p.pawnColors[i]).map(x -> x.color).collect(StringBuilder::new,
-                        StringBuilder::append,
-                        StringBuilder::append)
-                    .toString());
-            }
+            inputView.add(String.format("%d %d %d %d %s", p.id, p.fuel, p.position.getX(), p.position.getY(),
+                    Arrays.stream(p.pawnColors).map(row -> Arrays.stream(row).map(cell -> Integer.toString(cell.color))
+                                .collect(StringBuilder::new,StringBuilder::append,StringBuilder::append).toString())
+                        .collect(StringBuilder::new,StringBuilder::append,StringBuilder::append)));
         });
         return inputView;
     }
